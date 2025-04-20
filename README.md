@@ -1,7 +1,9 @@
 # DOT-London-Hackathon-April-2025
-Mini Ledger and CoT Ledger fun Oracle --- MiniLedger offers a tamper-evident audit trail for AI and Web3 applications, staying true to its ethos of minimalism and trust: no new chain, no new token – just reliable memory.
 
-Absolutely! Here's a solid starting **README.md** that explains the **CoT Oracle**, the dashboard, and how it aligns with the **Polkadot Asset Hub open track** requirements — particularly highlighting the **smart contract** and **NFT-based proof system**:
+Mini Ledger and CoT Ledger fun Oracle to demonstrate use and implimentation
+--- 
+
+MiniLedger offers a tamper-evident audit trail for AI and Web3 applications, staying true to its ethos of minimalism and trust: no new chain, no new token – just reliable memory.
 
 ---
 
