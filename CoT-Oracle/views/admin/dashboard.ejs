@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>🧠 CoT Oracle Dashboard</title>
+  <link rel="stylesheet" href="/css/dashboard.css" />
+</head>
+<body>
+  <div class="dashboard">
+    <header class="header">
+      <h1>🔮 CoT Oracle Admin Dashboard</h1>
+      <p class="subtitle">Inspect Memos, Proofs, Blocks, Anchors & Full Ledger</p>
+    </header>
+
+    <div class="controls">
+      <div class="dropdown-group">
+        <label for="memoSelect">📄 Memos</label>
+        <select id="memoSelect">
+          <option value="">-- Select a memo file --</option>
+        </select>
+      </div>
+
+      <div class="dropdown-group">
+        <label for="proofSelect">🧾 Memo Proofs</label>
+        <select id="proofSelect">
+          <option value="">-- Select a memo proof --</option>
+        </select>
+      </div>
+
+      <div class="dropdown-group">
+        <label for="blockProofSelect">📦 Block Proofs</label>
+        <select id="blockProofSelect">
+          <option value="">-- Select a block proof --</option>
+        </select>
+        <button id="anchorBlockNFTBtn">🪙 Mint Block NFT</button>
+      </div>
+
+      <div class="dropdown-group">
+        <label for="anchoredBlockSelect">🧩 Anchored NFT Blocks</label>
+        <select id="anchoredBlockSelect">
+          <option value="">-- Select an anchored block --</option>
+        </select>
+      </div>
+
+      <div class="dropdown-group">
+        <label for="blockList">🗃 Ledger Blocks</label>
+        <button id="loadBlocksBtn">📥 Load Block Ledger</button>
+      </div>
+
+      <div class="dropdown-group">
+        <label for="fullLedger">📘 Full Ledger</label>
+        <button id="loadLedgerBtn">📥 Load Full Ledger</button>
+      </div>
+    </div>
+
+    <div class="viewer">
+      <pre id="jsonViewer">// Select or load a file above to preview its content here...</pre>
+    </div>
+  </div>
+
+  <script src="/js/dashboard.js"></script>
+</body>
+</html>

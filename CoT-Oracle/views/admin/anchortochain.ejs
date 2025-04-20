@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>📦 Anchor Block to Chain</title>
+  <link rel="stylesheet" href="/css/dashboard.css" />
+</head>
+<body>
+  <div class="dashboard">
+    <header class="header">
+      <h1>📡 Anchor Block Proof to Chain</h1>
+      <p class="subtitle">Deploy Smart Contract for a Block Proof</p>
+    </header>
+
+    <div class="controls">
+      <div class="dropdown-group">
+        <label for="blockProofSelect">📦 Select Block Proof</label>
+        <select id="blockProofSelect">
+          <option value="">-- Select a block proof --</option>
+        </select>
+      </div>
+
+      <div class="dropdown-group">
+        <button id="compileDeployBtn">🚀 Compile + Deploy Contract</button>
+      </div>
+
+      <div class="dropdown-group">
+        <button id="viewContractBtn">📄 View Last Result</button>
+      </div>
+    </div>
+
+    <div class="viewer">
+      <pre id="contractResult">// Select a block and deploy a contract to view result here...</pre>
+    </div>
+  </div>
+
+  <script src="/js/anchortochain.js"></script>
+</body>
+</html>
