@@ -35,8 +35,8 @@ Built for transparency and verifiability, the system integrates:
 - Each block gets a unique ID and proofHash.
 
 ### 🪙 NFT Anchoring (Smart Contract Free)
-- The **block proof** is wrapped into structured metadata.
-- An NFT is minted **directly on Westend Asset Hub** with that metadata link.
+- The block proof is wrapped into structured metadata.
+- An NFT is minted directly on Westend Asset Hub with that metadata link.
 - This acts as an immutable, verifiable anchor for the Merkle proof.
 
 ### 📊 Real-Time Dashboard
@@ -57,7 +57,7 @@ Built for transparency and verifiability, the system integrates:
 | Backend | Node.js + Express |
 | AI | OpenAI GPT-3.5 |
 | Blockchain | Polkadot Asset Hub (Westend) |
-| Anchoring | NFT-based via `remarkWithEvent` alternative |
+| Anchoring | NFT-based via Westend Asset Hub |
 | Ledger | Custom Merkle ledger for memo grouping |
 | Storage | Local JSON structure (can be expanded to IPFS) |
 
@@ -68,19 +68,19 @@ Built for transparency and verifiability, the system integrates:
 This project directly aligns with the open track, and we’ve prioritized:
 
 ### ✅ Smart Contracts / NFTs on Asset Hub
-- Every Merkle block is **anchored using an NFT**.
-- Uses `@polkadot/api` to interact with **Westend Asset Hub**.
+- Every Merkle block is anchored using an NFT or a .sol contract.
+- Uses `@polkadot/api` to interact with Westend Asset Hub.
 - Metadata is structured per Polkadot NFT specs.
 
 ### ✅ DeFi-Ready Architecture
 - Designed for extension:
-  - Replace memo inputs with **DeFi risk assessments**
+  - Replace memo inputs with DeFi risk assessments
   - Log transactions or protocol decisions
   - Anchor arbitrage strategy outputs, etc.
 
 ### ✅ Gaming Use Case Potential
-- Anchor **in-game events** (loot drops, outcomes, user actions).
-- Create NFTs representing **game state snapshots** or **proof-of-play**.
+- Anchor in-game events (loot drops, outcomes, user actions).
+- Create NFTs representing game state snapshots** or proof-of-play.
 
 > ⚙️ The NFT metadata is modular — you can repurpose it for DeFi, gaming, voting, etc.
 
