@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CoT Oracle – Decision Mint</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <style>
+    header {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      background: transparent;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    header #bg-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+    .hero-text {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      color: #fff;
+    }
+    .hero-text h1 {
+      font-size: 3rem;
+      font-weight: 700;
+    }
+    .hero-text p {
+      font-size: 1.2rem;
+    }
+    .oracle-card {
+      background-color: #e0e0e0;
+      border-radius: 10px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 0 45px rgba(255, 105, 180, 0.6);
+    }
+    .oracle-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 0 75px rgba(255, 105, 180, 0.8);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <canvas id="bg-canvas"></canvas>
+    <div class="hero-text">
+      <h1 id="hero-title">🔮 CoT Oracle</h1>
+      <p id="hero-subtitle">Let our AI decide for you—and mint your decision on the blockchain!</p>
+    </div>
+  </header>
+
+  <main class="container py-5">
+    <section id="step1" class="oracle-step visible">
+      <form id="oracleForm">
+        <div class="mb-3">
+          <label for="question" class="form-label">What do you want help deciding?</label>
+          <input type="text" class="form-control" id="question" placeholder="e.g. Should I wear red or blue?" required />
+        </div>
+        <div class="mb-3">
+          <label for="context" class="form-label">Add context (optional)</label>
+          <input type="text" class="form-control" id="context" placeholder="e.g. I have a party tonight..." />
+        </div>
+        <button type="submit" class="btn btn-primary">Ask the Oracle</button>
+      </form>
+    </section>
+
+    <section id="step2" class="oracle-step hidden mt-4">
+      <h4>🤖 Oracle's Decision</h4>
+      <pre id="oracleResponse" class="oracle-card">Thinking...</pre>
+      <div class="mt-3 d-flex justify-content-between">
+        <button id="retryBtn" class="btn btn-outline-secondary">Ask Again</button>
+        <button id="mintBtn" class="btn btn-success">
+          I Like It – Mint It
+          <span id="mintSpinner" class="spinner-border spinner-border-sm ms-2" role="status" aria-hidden="true" style="display: none;"></span>
+        </button>
+      </div>
+    </section>
+
+    <section id="step3" class="oracle-step hidden mt-4">
+      <h4>🪙 Mint Your Decision</h4>
+      <p class="mb-3">We’ll save the decision, generate a proof, and mint it as an NFT on Polkadot Asset Hub.</p>
+      <div id="step3"></div>
+    </section>
+  </main>
+
+  <footer class="mt-5 py-3 text-center">
+    <p>&copy; 2025 CoT Oracle. All rights reserved. | <a href="/privacy" class="text-decoration-none text-light">Privacy Policy</a></p>
+  </footer>
+
+  <script>
+    const form = document.getElementById('oracleForm');
+    const step1 = document.getElementById('step1');
+    const step2 = document.getElementById('step2');
+    const step3 = document.getElementById('step3');
+    const responseDiv = document.getElementById('oracleResponse');
+    const retryBtn = document.getElementById('retryBtn');
+    const mintBtn = document.getElementById('mintBtn');
+    const mintSpinner = document.getElementById('mintSpinner');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      step1.classList.replace('visible', 'hidden');
+      step2.classList.replace('hidden', 'visible');
+      responseDiv.textContent = '🤖 Thinking...';
+
+      const question = document.getElementById('question').value;
+      const context = document.getElementById('context').value;
+
+      try {
+        const res = await fetch('/api/ask', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ question, context })
+        });
+        const data = await res.json();
+        responseDiv.textContent = JSON.stringify(data, null, 2);
+      } catch (err) {
+        responseDiv.textContent = '❌ Error contacting the Oracle.';
+      }
+    });
+
+    retryBtn.onclick = () => { location.reload(); };
+
+    mintBtn.onclick = async () => {
+      step2.classList.replace('visible', 'hidden');
+      step3.classList.replace('hidden', 'visible');
+      mintBtn.disabled = true;
+      mintSpinner.style.display = 'inline-block';
+      mintBtn.firstChild.textContent = " Minting...";
+
+      const mintSection = document.getElementById('step3');
+      mintSection.innerHTML = '';
+
+      let decision;
+      try {
+        decision = JSON.parse(responseDiv.textContent);
+      } catch (err) {
+        mintSection.innerHTML = `<div class="alert alert-danger">❌ Invalid decision format.</div>`;
+        mintBtn.disabled = false;
+        mintBtn.firstChild.textContent = "I Like It – Mint It";
+        mintSpinner.style.display = 'none';
+        return;
+      }
+
+      try {
+        const mintRes = await fetch('/api/mint', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(decision)
+        });
+
+        if (!mintRes.ok) throw new Error(`Server responded with ${mintRes.status}`);
+        const mintResult = await mintRes.json();
+
+        const memoId = mintResult?.data?.memo_id || 'Unknown';
+        const nftId = mintResult?.data?.proof?.nft_id || 'N/A';
+        const metadataUrl = mintResult?.data?.proof?.metadata_url || '#';
+        const owner = mintResult?.data?.proof?.owner || '';
+        const collectionId = mintResult?.data?.proof?.collection_id || '';
+        const itemId = mintResult?.data?.proof?.item_id || '';
+
+        const subscanUrl = collectionId && itemId
+          ? `https://westend-asset-hub.subscan.io/nft/${collectionId}/${itemId}`
+          : null;
+
+        const resultHTML = `
+          <div class="alert alert-success mt-3" role="alert">
+            ✅ Your decision was minted successfully!
+            <ul class="mt-2 mb-0">
+              <li><strong>Memo ID:</strong> ${memoId}</li>
+              <li><strong>NFT ID:</strong> ${nftId}</li>
+              <li><strong>Metadata URL:</strong> <a href="${metadataUrl}" target="_blank">${metadataUrl}</a></li>
+              ${subscanUrl ? `<li><strong>Subscan:</strong> <a href="${subscanUrl}" target="_blank">${subscanUrl}</a></li>` : ''}
+            </ul>
+          </div>
+        `;
+        mintSection.insertAdjacentHTML('beforeend', resultHTML);
+      } catch (err) {
+        mintSection.insertAdjacentHTML('beforeend', `
+          <div class="alert alert-danger mt-3" role="alert">
+            ❌ Failed to mint decision. Please try again later.
+          </div>
+        `);
+        console.error('Mint error:', err);
+      } finally {
+        mintBtn.disabled = false;
+        mintBtn.firstChild.textContent = "I Like It – Mint It";
+        mintSpinner.style.display = 'none';
+      }
+    };
+  </script>
+
+  <script src="/js/oracle.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
+  <script>
+    window.addEventListener('load', () => {
+      gsap.from("#hero-title", { duration: 1.2, opacity: 0, y: -50, ease: "power2.out" });
+      gsap.from("#hero-subtitle", { duration: 1.2, opacity: 0, y: 50, ease: "power2.out", delay: 0.4 });
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"></script>
+  <script>
+    let scene, camera, renderer, plane;
+    const d = 1;
+    function initThree() {
+      const canvas = document.getElementById('bg-canvas');
+      renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      const aspect = window.innerWidth / window.innerHeight;
+      camera = new THREE.OrthographicCamera(-d * aspect, d * aspect, d, -d, 0.1, 1000);
+      camera.position.set(0, 0, 5);
+      camera.lookAt(0, 0, 0);
+      scene = new THREE.Scene();
+      const textureLoader = new THREE.TextureLoader();
+      const texture = textureLoader.load('/images/one3.jpg');
+      texture.wrapS = THREE.RepeatWrapping;
+      texture.wrapT = THREE.RepeatWrapping;
+      const geometry = new THREE.PlaneGeometry(3, 3);
+      const material = new THREE.MeshPhongMaterial({ map: texture, color: 0x555555, emissive: 0xff69b4, emissiveIntensity: 0.3 });
+      plane = new THREE.Mesh(geometry, material);
+      plane.rotation.x = -0.2;
+      scene.add(plane);
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+      scene.add(ambientLight);
+      const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+      directionalLight.position.set(2, 2, 2);
+      scene.add(directionalLight);
+      window.addEventListener('resize', onWindowResize, false);
+      animate();
+    }
+    function onWindowResize() {
+      const aspect = window.innerWidth / window.innerHeight;
+      camera.left = -d * aspect;
+      camera.right = d * aspect;
+      camera.top = d;
+      camera.bottom = -d;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+    function animate() {
+      requestAnimationFrame(animate);
+      renderer.render(scene, camera);
+    }
+    initThree();
+  </script>
+</body>
+</html>
