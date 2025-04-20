@@ -1,0 +1,36 @@
+{
+    "ledger_id": "cot_oracle_ledger",
+    "block_size": 2,
+    "block_timeout": 0,
+    "created_at": "2025-04-14T00:00:00Z",
+    "fields": {
+      "ledger_transaction_id": "",
+      "memo_id": "",
+      "ledger_id": "",
+      "timestamp": "",
+      "network": "",
+      "transaction_type": "",
+      "agent_id": "",
+      "decision": "",
+      "reasoning": "",
+      "confidence_score": 0,
+      "model_used": "",
+      "disclaimer": "",
+      "proof": {
+        "nft_id": "",
+        "collection_id": 0,
+        "item_id": 0,
+        "owner": "",
+        "block_hash": "",
+        "tx_hash": "",
+        "minted_at": "",
+        "metadata_url": ""
+      },
+      "metadata_url": "",
+      "ipfs_cid": "",
+      "meta_data": ""
+    },
+    "blocks": []
+  }
+  
+  
