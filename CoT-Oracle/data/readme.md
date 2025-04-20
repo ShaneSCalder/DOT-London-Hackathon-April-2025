@@ -1,1 +1,1 @@
-# Json file to congigure the CoT Ledger 
+# Json file to config the CoT Ledger 
